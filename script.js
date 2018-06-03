@@ -3,7 +3,7 @@ window.onload = function () {
 		canvasHeight = 600,
 		blocSize = 30,
 		ctx,
-		delay = 400,
+		delay = 200,
 		snakee,
 		applee,
 		widthInBlocks = canvasWidth / blocSize,
@@ -27,16 +27,21 @@ window.onload = function () {
 	}
 
 	function refreshCanvas() {
-		ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 		snakee.advance();
-		snakee.draw();
-		applee.draw();
-		setTimeout(refreshCanvas, delay);
+		if(snakee.checkCollision()){
+			//game over
+		}
+		else{
+			ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+			snakee.draw();
+			applee.draw();
+			setTimeout(refreshCanvas, delay);
+		}
 	}
 
 	function drawBloc(ctx, position) {
 		var x = position[0] * blocSize;
-		var y = position[1] * blocSize;
+		var y = position[1] * blocSize; 
 		ctx.fillRect(x, y, blocSize, blocSize);
 	}
 
@@ -67,6 +72,8 @@ window.onload = function () {
 				case "up":
 					nextPosition[1] -= 1;
 					break;
+				default:
+					throw("ivalid direction");
 			}
 			this.body.unshift(nextPosition);
 			this.body.pop();
@@ -83,6 +90,8 @@ window.onload = function () {
 				case "up":
 					allowedDirections = ["left", "right"];
 					break;
+				default:
+					throw("ivalid direction");
 			};
 			if (allowedDirections.indexOf(newDirection) > -1) {
 				this.direction = newDirection;
@@ -99,18 +108,21 @@ window.onload = function () {
 			var minX = 0;
 			var minY = 0;
 			var maxX = widthInBlocks - 1;
-			var marY = heightInBlocks - 1;
+			var maxY = heightInBlocks - 1;
 			var isNotBetweenHorzontalWalls = snakeX < minX || snakeX > maxX;
-			var isNotBetweenVerticalWalls = snakeX < minY || snakeX > maxY;
-			var headinBody = ;
+			var isNotBetweenVerticalWalls = snakeY < minY || snakeY > maxY;
 
 			if(isNotBetweenHorzontalWalls || isNotBetweenVerticalWalls){
 				return wallCollision = true;
 			}
 
-			if (tête in rest) {
-				return snakeCollision = true;
+			for (var i = 0; i<rest.length; i++)
+			{
+				if(snakeX === rest[i][0] && snakeY === rest[i][1]){
+					return snakeCollision = true;					
+				}
 			}
+			return wallCollision || snakeCollision;
 		}
 	}
 
@@ -152,8 +164,10 @@ window.onload = function () {
 			case 83:
 				newDirection = "down";
 				break;
+			default:
+				return;
 		}
-		snakee.setDirection(newDirection);
+		snakee.setDirection (newDirection);
 	}
 
 }
