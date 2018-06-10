@@ -1,4 +1,4 @@
-window.onload = function () {
+window.onload = function (){
 	var canvasWidth = 900,
 		canvasHeight = 600,
 		blocSize = 30,
@@ -8,11 +8,14 @@ window.onload = function () {
 		applee,
 		widthInBlocks = canvasWidth / blocSize,
 		heightInBlocks = canvasHeight / blocSize;
+		var score;
+		var timeout;
+
  		
 
 	init();
 
-	function init() {
+	function init(){
 		var canvas = document.createElement('canvas');
 		canvas.width = canvasWidth;
 		canvas.height = canvasHeight;
@@ -28,14 +31,13 @@ window.onload = function () {
 		refreshCanvas();
 	}
 
-	function refreshCanvas() {
+	function refreshCanvas(){
 		snakee.advance();
 		if(snakee.checkCollision()){
 			gameOver();
 		}
-		else{
-			if (snakee.isEatingApple(applee))
-			{
+		else {
+			if (snakee.isEatingApple(applee)){
 				score++;
 				snakee.ateApple = true;
 				do {
@@ -48,11 +50,11 @@ window.onload = function () {
 			drawScore();
 			snakee.draw();
 			applee.draw();
-			setTimeout(refreshCanvas, delay);
+
+			timeout = setTimeout(refreshCanvas, delay);
 		}
 	}
-	function gameOver()
-	{
+	function gameOver(){
 		ctx.save();
 		ctx.font = 'bold 70px sans-serif';
 		ctx.fillStyle = '#000';
@@ -70,15 +72,14 @@ window.onload = function () {
 		ctx.fillText("Appuyer sur la touche Espace pour rejouer",centerX, centerY - 120);
 		ctx.restore();
 	}
-	function restart()
-	{
+	function restart(){
 		snakee = new Snake([[6, 4], [5, 4], [4, 4]], "right");
 		applee = new Apple([10,10]);
 		score = 0;
+		clearTimeout(timeout);
 		refreshCanvas();
 	}
-	function drawScore()
-	{
+	function drawScore() {
 		ctx.save();
 		ctx.font = 'bold 200px sans-serif';
 		ctx.fillStyle = 'gray';
@@ -156,8 +157,7 @@ window.onload = function () {
 			}
 		};
 
-		this.checkCollision = function()
-		{
+		this.checkCollision = function(){
 			var wallCollision = false;
 			var snakeCollision = false;
 			var head = this.body[0];
@@ -183,8 +183,7 @@ window.onload = function () {
 			}
 			return wallCollision || snakeCollision;
 		};
-		this.isEatingApple = function(appleToEat)
-		{
+		this.isEatingApple = function(appleToEat){
 			//Head of our snake
 			var head = this.body[0];
 			if (head[0] === appleToEat.position[0] && head[1] === appleToEat.position[1]) {
